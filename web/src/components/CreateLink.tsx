@@ -43,6 +43,7 @@ export function CreateLink({ onCreated }: { onCreated: () => void }) {
           <input
             type="url"
             required
+            data-testid="create-url"
             placeholder="https://example.com/a/very/long/link"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -52,6 +53,7 @@ export function CreateLink({ onCreated }: { onCreated: () => void }) {
           Custom alias <span className="muted">(optional)</span>
           <input
             type="text"
+            data-testid="create-alias"
             placeholder="my-link"
             value={alias}
             onChange={(e) => setAlias(e.target.value)}
@@ -68,7 +70,12 @@ export function CreateLink({ onCreated }: { onCreated: () => void }) {
         <div className="result">
           <span className="result-label">Short link</span>
           <div className="result-row">
-            <a href={result.shortUrl} target="_blank" rel="noreferrer">
+            <a
+              href={result.shortUrl}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="result-short-url"
+            >
               {result.shortUrl}
             </a>
             <button className="ghost" onClick={copy}>

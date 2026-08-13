@@ -47,6 +47,7 @@ export function LinkList({
             {links.map((l) => (
               <tr
                 key={l.code}
+                data-testid="link-row"
                 className={selected === l.code ? "active" : ""}
                 onClick={() => onSelect(l.code)}
               >

@@ -9,6 +9,10 @@
   "scripts": {
     "install:all": "npm install && npm --prefix functions install && npm --prefix web install",
     "build": "npm run build:functions && npm run build:web",
+    "e2e:app": "npm run build && firebase emulators:start --only functions,firestore,hosting",
+    "e2e:install": "npm --prefix e2e install && npm --prefix e2e exec -- playwright install chromium",
+    "e2e": "npm --prefix e2e test",
+    "e2e:report": "npm --prefix e2e run report",
     "build:functions": "npm --prefix functions run build",
     "build:web": "npm --prefix web run build",
     "lint": "npm --prefix functions run lint",

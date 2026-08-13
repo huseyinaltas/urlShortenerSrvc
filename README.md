@@ -200,22 +200,29 @@ expensive/irreversible seams open.**
 
 ## Testing
 
+Three layers — pure unit, service integration, and full end-to-end:
+
 ```bash
 npm test                      # unit tests (integration self-skips w/o emulator)
 npm run test:unit             # pure logic: codec + URL validation (fast, no Java)
 npm run test:integration      # full API against the Firestore emulator
+
+npm run e2e:install           # one-time: Playwright + Chromium
+npm run e2e                   # Playwright UI + API E2E (builds app + boots emulators)
 ```
 
-- **Unit** (`*.unit.test.ts`) — code generation (length, alphabet, uniqueness,
-  alias/reserved rules) and URL validation (scheme allow-list, normalization,
-  length, malformed input). No external dependencies.
-- **Integration** (`*.integration.test.ts`) — drives the real Express app with
-  `supertest` against a live Firestore emulator: shorten (valid/invalid/alias/
-  duplicate/reserved), 302 redirect, click counting, stats aggregation
-  (timeline + referrers), 404s, and recent-links ordering.
-
-The integration suite self-skips when `FIRESTORE_EMULATOR_HOST` is unset, so a
-bare `npm test` is safe on a machine without Java; CI runs the full suite.
+- **Unit** (`functions/**/*.unit.test.ts`) — code generation, URL validation,
+  and short-URL base resolution. No external dependencies.
+- **Integration** (`functions/**/*.integration.test.ts`) — drives the real
+  Express app with `supertest` against a live Firestore emulator: shorten
+  (valid/invalid/alias/duplicate/reserved), 302 redirect, click counting, stats
+  aggregation, 404s, recent-links ordering. Self-skips when
+  `FIRESTORE_EMULATOR_HOST` is unset, so a bare `npm test` is safe without Java.
+- **E2E** ([`e2e/`](e2e/), Playwright) — runs against the **built** SPA on the
+  Hosting emulator (production parity). API tests via the `request` fixture; UI
+  tests via a `DashboardPage` Page Object; plus a combined UI+API flow (create in
+  the UI → drive redirects → assert the click count in the dashboard). See
+  [e2e/README.md](e2e/README.md).
 
 ---
 
@@ -224,6 +231,9 @@ bare `npm test` is safe on a machine without Java; CI runs the full suite.
 - **`.github/workflows/ci.yml`** — on every push/PR: install → lint → build
   (functions + web) → unit tests → integration tests under the Firestore
   emulator (Java + Firebase CLI provisioned in the job).
+- **`.github/workflows/e2e.yml`** — on every push/PR: Playwright UI + API E2E
+  against the built app on the emulators (Chromium), uploading the HTML report
+  as a build artifact.
 - **`.github/workflows/deploy.yml`** — optional, **manual** (`workflow_dispatch`).
   Emulator-first means live deploy is off by default; enable it by setting a
   Firebase project and a `FIREBASE_SERVICE_ACCOUNT` secret (instructions in the
@@ -240,10 +250,12 @@ This was built AI-assisted with an engineer in the loop the whole way:
   data model and atomic-write strategy, the security boundary (server-only
   Firestore + scheme allow-list), the 301-vs-302 analytics decision, and the
   handling of ambiguous requirements above.
-- **Verified, not assumed**: every layer was run — `tsc` build, ESLint, 14 unit
-  tests, and 10 integration tests against the live emulator all pass before this
-  was called done. A test bug (a 2-char alias violating the 3-char minimum) was
-  caught and fixed during that verification, not papered over.
+- **Verified, not assumed**: every layer was run — `tsc` build, ESLint, 22 unit
+  tests, 10 integration tests, and 12 Playwright E2E tests (UI + API) against the
+  live emulators all pass before this was called done. Real bugs were caught and
+  fixed during verification, not papered over — e.g. the short-URL builder was
+  returning the internal Functions-emulator host, and `deploy.yml` was an invalid
+  workflow (`secrets` used in an `if:`) that failed on every push.
 
 ---
 
@@ -276,6 +288,9 @@ urlShortenerSrvc/
 │  └─ src/
 │     ├─ App.tsx, api.ts
 │     └─ components/      #   CreateLink, LinkList, StatsPanel, BarChart
+├─ e2e/                  # Playwright E2E (UI + API) against the built app
+│  ├─ pages/             #   DashboardPage (POM)
+│  └─ tests/{api,ui}/    #   request-fixture API specs + UI specs
 ├─ scripts/seed.mjs      # seed demo data via the API
 ├─ firebase.json         # Hosting rewrites, emulators, functions config
 ├─ firestore.rules       # deny-all client access (server-only)

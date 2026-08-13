@@ -53,7 +53,9 @@ export function StatsPanel({ code }: { code: string | null }) {
         <>
           <div className="stat-row">
             <div className="stat">
-              <span className="stat-num">{stats.clickCount}</span>
+              <span className="stat-num" data-testid="total-clicks">
+                {stats.clickCount}
+              </span>
               <span className="stat-label">Total clicks</span>
             </div>
             <div className="stat">

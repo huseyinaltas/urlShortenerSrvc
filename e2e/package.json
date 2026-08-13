@@ -1,0 +1,15 @@
+{
+  "name": "e2e",
+  "private": true,
+  "description": "Playwright end-to-end tests (UI + API) for the URL shortener",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/ui",
+    "test:api": "playwright test tests/api",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.2",
+    "@types/node": "^20.14.0"
+  }
+}
