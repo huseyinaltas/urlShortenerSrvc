@@ -15,6 +15,10 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # The `secrets` context is NOT allowed in an `if:` expression, so map the
+    # secret to a job-level env var (which IS allowed in `if:`) and gate on that.
+    env:
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +34,7 @@ jobs:
           npm --prefix web run build
 
       - name: Guard — require credentials
-        if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT == '' }}
+        if: ${{ env.FIREBASE_SERVICE_ACCOUNT == '' }}
         run: |
           echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set — see this file's header."
           exit 1
@@ -40,4 +44,4 @@ jobs:
         with:
           args: deploy --only hosting,functions,firestore --project ${{ env.FIREBASE_PROJECT }}
         env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GCP_SA_KEY: ${{ env.FIREBASE_SERVICE_ACCOUNT }}
