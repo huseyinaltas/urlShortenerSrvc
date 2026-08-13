@@ -1,5 +1,7 @@
 # Shortly — URL Shortener Service
 
+[![CI](https://github.com/huseyinaltas/urlShortenerSrvc/actions/workflows/ci.yml/badge.svg)](https://github.com/huseyinaltas/urlShortenerSrvc/actions/workflows/ci.yml)
+
 An AI-assisted URL shortener built for the AI Engineering Assessment. It shortens
 long URLs, redirects visitors, and tracks per-link analytics (click counts, a
 daily timeline, and top referrers) behind a small React dashboard.
