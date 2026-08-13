@@ -1,0 +1,26 @@
+{
+  "name": "url-shortener-srvc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-assisted URL shortener — Firebase Cloud Functions + Firestore + React. Emulator-first, runnable end-to-end with no cloud credentials.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "install:all": "npm install && npm --prefix functions install && npm --prefix web install",
+    "build": "npm run build:functions && npm run build:web",
+    "build:functions": "npm --prefix functions run build",
+    "build:web": "npm --prefix web run build",
+    "lint": "npm --prefix functions run lint",
+    "test": "npm --prefix functions test",
+    "test:unit": "npm --prefix functions run test:unit",
+    "test:integration": "npm --prefix functions run test:integration",
+    "emulators": "firebase emulators:start",
+    "predev": "npm run build:functions && npm run build:web",
+    "dev": "concurrently -n functions,emulators,web -c yellow,blue,green \"npm --prefix functions run build:watch\" \"npm run emulators\" \"npm --prefix web run dev\"",
+    "seed": "node scripts/seed.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

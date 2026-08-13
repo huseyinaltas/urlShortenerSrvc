@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    name: Lint · Build · Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            functions/package-lock.json
+            web/package-lock.json
+
+      # Java is required by the Firestore emulator (integration tests).
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Install dependencies
+        run: |
+          npm --prefix functions ci
+          npm --prefix web ci
+
+      - name: Lint (functions)
+        run: npm --prefix functions run lint
+
+      - name: Build (functions + web)
+        run: |
+          npm --prefix functions run build
+          npm --prefix web run build
+
+      - name: Unit tests
+        run: npm --prefix functions run test:unit
+
+      - name: Integration tests (Firestore emulator)
+        run: npm --prefix functions run test:integration

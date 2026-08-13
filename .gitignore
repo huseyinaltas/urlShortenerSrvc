@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.npm
+
+# Build output
+functions/lib/
+web/dist/
+*.tsbuildinfo
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+firestore-debug.log*
+ui-debug.log*
+*-debug.log
+
+# Emulator data exports (uncomment to keep a seeded snapshot out of git)
+# .emulator-data/
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Env & secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+serviceAccount*.json
+*-service-account.json
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

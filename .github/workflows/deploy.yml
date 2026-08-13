@@ -1,0 +1,43 @@
+name: Deploy (optional)
+
+# The project is emulator-first, so live deploy is OFF by default and only runs
+# when triggered manually. To enable it:
+#   1. Create a Firebase project and set its id below (or as a repo variable).
+#   2. Generate a service account with Firebase deploy permissions and add its
+#      JSON as the FIREBASE_SERVICE_ACCOUNT secret.
+#   3. Run this workflow from the Actions tab.
+on:
+  workflow_dispatch:
+
+env:
+  FIREBASE_PROJECT: ${{ vars.FIREBASE_PROJECT || 'demo-url-shortener' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install & build
+        run: |
+          npm --prefix functions ci
+          npm --prefix web ci
+          npm --prefix functions run build
+          npm --prefix web run build
+
+      - name: Guard — require credentials
+        if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT == '' }}
+        run: |
+          echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set — see this file's header."
+          exit 1
+
+      - name: Deploy Hosting + Functions + Firestore rules
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting,functions,firestore --project ${{ env.FIREBASE_PROJECT }}
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
