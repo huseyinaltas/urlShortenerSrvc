@@ -11,6 +11,7 @@ import {
   ValidationError,
 } from "./store";
 import { isReserved } from "./codec";
+import { buildShortUrlFrom, firstHeaderValue } from "./urls";
 
 /**
  * Build the Express app that backs the single `app` Cloud Function.
@@ -151,8 +152,18 @@ function asyncHandler(
 }
 
 function buildShortUrl(req: Request, code: string): string {
-  const host = req.get("host");
-  return host ? `${req.protocol}://${host}/${code}` : `/${code}`;
+  return buildShortUrlFrom(
+    {
+      publicBaseUrl: process.env.PUBLIC_BASE_URL,
+      isEmulator: process.env.FUNCTIONS_EMULATOR === "true",
+      emulatorBaseUrl: process.env.EMULATOR_BASE_URL,
+      forwardedHost: firstHeaderValue(req.headers["x-forwarded-host"]),
+      forwardedProto: firstHeaderValue(req.headers["x-forwarded-proto"]),
+      host: req.get("host") || undefined,
+      protocol: req.protocol,
+    },
+    code,
+  );
 }
 
 function notFoundPage(code: string): string {
