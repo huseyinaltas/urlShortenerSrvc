@@ -11,6 +11,9 @@ export class DashboardPage {
   readonly shortenButton: Locator;
   readonly resultShortUrl: Locator;
   readonly totalClicks: Locator;
+  readonly last30Days: Locator;
+  readonly timelineChart: Locator;
+  readonly topReferrers: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +22,26 @@ export class DashboardPage {
     this.shortenButton = page.getByRole("button", { name: "Shorten" });
     this.resultShortUrl = page.getByTestId("result-short-url");
     this.totalClicks = page.getByTestId("total-clicks");
+    this.last30Days = page.getByTestId("last-30-days");
+    this.timelineChart = page.getByRole("img", { name: "Clicks per day" });
+    this.topReferrers = page.getByTestId("top-referrers");
+  }
+
+  // ---- Links table cells (scoped to a given code's row) ----
+  linkCode(code: string): Locator {
+    return this.linkRow(code).getByTestId("link-code");
+  }
+  linkDest(code: string): Locator {
+    return this.linkRow(code).getByTestId("link-dest");
+  }
+  linkClicks(code: string): Locator {
+    return this.linkRow(code).getByTestId("link-clicks");
+  }
+  linkCreated(code: string): Locator {
+    return this.linkRow(code).getByTestId("link-created");
+  }
+  referrerRows(): Locator {
+    return this.topReferrers.getByTestId("referrer-row");
   }
 
   async goto(): Promise<void> {

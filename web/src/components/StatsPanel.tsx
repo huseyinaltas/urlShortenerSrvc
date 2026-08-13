@@ -59,7 +59,7 @@ export function StatsPanel({ code }: { code: string | null }) {
               <span className="stat-label">Total clicks</span>
             </div>
             <div className="stat">
-              <span className="stat-num">
+              <span className="stat-num" data-testid="last-30-days">
                 {stats.timeline.reduce((a, d) => a + d.count, 0)}
               </span>
               <span className="stat-label">Last 30 days</span>
@@ -73,9 +73,9 @@ export function StatsPanel({ code }: { code: string | null }) {
           {stats.topReferrers.length === 0 ? (
             <p className="muted">No clicks recorded yet.</p>
           ) : (
-            <ul className="referrers">
+            <ul className="referrers" data-testid="top-referrers">
               {stats.topReferrers.map((r) => (
-                <li key={r.referer}>
+                <li key={r.referer} data-testid="referrer-row">
                   <span className="ref-host">{r.referer}</span>
                   <span className="ref-count">{r.count}</span>
                 </li>

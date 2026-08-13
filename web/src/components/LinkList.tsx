@@ -51,14 +51,18 @@ export function LinkList({
                 className={selected === l.code ? "active" : ""}
                 onClick={() => onSelect(l.code)}
               >
-                <td>
+                <td data-testid="link-code">
                   <code>{l.code}</code>
                 </td>
-                <td className="dest" title={l.url}>
+                <td className="dest" data-testid="link-dest" title={l.url}>
                   {l.url}
                 </td>
-                <td className="num">{l.clickCount}</td>
-                <td className="muted small">{timeAgo(l.createdAt)}</td>
+                <td className="num" data-testid="link-clicks">
+                  {l.clickCount}
+                </td>
+                <td className="muted small" data-testid="link-created">
+                  {timeAgo(l.createdAt)}
+                </td>
               </tr>
             ))}
           </tbody>
