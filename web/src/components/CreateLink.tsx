@@ -64,7 +64,11 @@ export function CreateLink({ onCreated }: { onCreated: () => void }) {
         </button>
       </form>
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="error" data-testid="create-error">
+          {error}
+        </p>
+      )}
 
       {result && (
         <div className="result">

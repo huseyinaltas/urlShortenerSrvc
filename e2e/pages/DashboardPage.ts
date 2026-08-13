@@ -10,6 +10,7 @@ export class DashboardPage {
   readonly aliasInput: Locator;
   readonly shortenButton: Locator;
   readonly resultShortUrl: Locator;
+  readonly createError: Locator;
   readonly totalClicks: Locator;
   readonly last30Days: Locator;
   readonly timelineChart: Locator;
@@ -21,10 +22,18 @@ export class DashboardPage {
     this.aliasInput = page.getByTestId("create-alias");
     this.shortenButton = page.getByRole("button", { name: "Shorten" });
     this.resultShortUrl = page.getByTestId("result-short-url");
+    this.createError = page.getByTestId("create-error");
     this.totalClicks = page.getByTestId("total-clicks");
     this.last30Days = page.getByTestId("last-30-days");
     this.timelineChart = page.getByRole("img", { name: "Clicks per day" });
     this.topReferrers = page.getByTestId("top-referrers");
+  }
+
+  /** Fill the form and submit without waiting for success (for invalid inputs). */
+  async attemptCreate(url: string, alias?: string): Promise<void> {
+    await this.urlInput.fill(url);
+    if (alias) await this.aliasInput.fill(alias);
+    await this.shortenButton.click();
   }
 
   // ---- Links table cells (scoped to a given code's row) ----
