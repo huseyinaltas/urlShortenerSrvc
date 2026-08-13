@@ -19,6 +19,11 @@ no credentials, and no billing** — clone, install, run.
 > (`shockServices`) — Cloud Functions v2, `firebase-admin/firestore`, TypeScript,
 > Jest, GitHub Actions — so it reads like production code I already maintain.
 
+📄 **Reviewers:** the engineer-owned narrative — requirement understanding, task
+decomposition, AI-traceability (generated/edited/rejected), validation, risks,
+assumptions, and limitations — is in
+**[docs/ENGINEERING_SUMMARY.md](docs/ENGINEERING_SUMMARY.md)**.
+
 ---
 
 ## Quick start
@@ -243,6 +248,11 @@ npm run e2e                   # Playwright UI + API E2E (builds app + boots emul
 
 ## How AI was used (traceability)
 
+> The full engineer-owned narrative — requirement understanding, task
+> decomposition, the AI-traceability log (generated / edited / rejected with
+> rationale), validation, risks, assumptions, and limitations — is in
+> **[docs/ENGINEERING_SUMMARY.md](docs/ENGINEERING_SUMMARY.md)**.
+
 This was built AI-assisted with an engineer in the loop the whole way:
 - **AI accelerated**: scaffolding config, boilerplate, the test matrix, the SVG
   chart, and this documentation.
@@ -251,11 +261,12 @@ This was built AI-assisted with an engineer in the loop the whole way:
   Firestore + scheme allow-list), the 301-vs-302 analytics decision, and the
   handling of ambiguous requirements above.
 - **Verified, not assumed**: every layer was run — `tsc` build, ESLint, 22 unit
-  tests, 10 integration tests, and 12 Playwright E2E tests (UI + API) against the
+  tests, 10 integration tests, and 21 Playwright E2E tests (UI + API) against the
   live emulators all pass before this was called done. Real bugs were caught and
-  fixed during verification, not papered over — e.g. the short-URL builder was
-  returning the internal Functions-emulator host, and `deploy.yml` was an invalid
-  workflow (`secrets` used in an `if:`) that failed on every push.
+  fixed by those quality gates, not papered over — e.g. the short-URL builder
+  returned the internal Functions-emulator host (fixed + unit-tested), and
+  `deploy.yml` was an invalid workflow (`secrets` used in an `if:`) that failed on
+  every push (fixed). See the traceability log in the summary for the full list.
 
 ---
 
