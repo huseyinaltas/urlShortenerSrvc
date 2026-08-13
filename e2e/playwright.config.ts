@@ -20,7 +20,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: [["list"], ["html", { open: "never" }]],
-  globalSetup: require.resolve("./global-setup"),
+  globalSetup: "./global-setup",
   use: {
     baseURL: BASE_URL,
     trace: "retain-on-failure",
